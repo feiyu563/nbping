@@ -67,15 +67,15 @@ func main()  {
 	Pingok=0
 	//命令行参数
 	var ipfile string
-	flag.StringVar(&ipfile, "i", "ip.txt", "ip file path")
+	flag.StringVar(&ipfile, "i", "ip.txt", "IP文件所在路径,,默认读取当前目录ip.txt")
 	var output string
-	flag.StringVar(&output, "o", "out.csv", "out put file path")
+	flag.StringVar(&output, "o", "out.csv", "结果输出文件所在路径,默认放在当前目录out.csv")
 	var num int
-	flag.IntVar(&num, "n", 20, "number of thread for ping")
-	flag.IntVar(&debug_req, "d", 0, "if open debug")
-	flag.IntVar(&retry, "r", 2, "if open debug")
+	flag.IntVar(&num, "n", 20, "开启的并发协程数量,默认20")
+	flag.IntVar(&debug_req, "d", 0, "是否打开debug模式,即开启显示每条IP结果记录")
+	flag.IntVar(&retry, "r", 2, "IP检测失败重试次数,默认2次")
 	var help bool
-	flag.BoolVar(&help,"h", false, "for help\nbuild by zhangjikun@haima.me\nversion 1.0")
+	flag.BoolVar(&help,"h", false, "显示此帮助页\nbuild by zhangjikun@haima.me\nversion 1.0")
 	flag.Parse()
 	if help {
 		flag.Usage()
@@ -84,6 +84,7 @@ func main()  {
 	t:=time.Now() //取当前时间戳
 	status := make(chan int, num)
 	req:=make(chan []string)
+	fmt.Println("正在加载IP资源文件....")
 	f, err := os.Open(ipfile)
 	if err != nil {
 		panic(err)
@@ -91,22 +92,26 @@ func main()  {
 	defer f.Close()
 	rd := bufio.NewReader(f)
 	LinsNum:=CountFileLine(ipfile)
-	noIPline:=0
+	ips:=[]string{}
+
 	for lines:=0;lines<=LinsNum;lines++ {
-		status <- 1
 		line, _ := rd.ReadString('\n') //以'\n'为结束符读入一行
 		line = strings.TrimSpace(line)
-		if len(line)>5 {
-			go IPpingStart(line,req,status)
-		}else {
-			noIPline++
+		if len(line)>5 && len(strings.Split(line, "."))==4 {
+			ips=append(ips,line)
 		}
+	}
+	LinsNum=len(ips)
+	fmt.Println("IP资源加载完成,正在启动协程...")
+	for _,ip:=range ips{
+		status <- 1
+		go IPpingStart(ip,req,status)
 	}
 	strings_req:=[]string{"ip","status"}
 	fd,_:=os.OpenFile(output,os.O_RDWR|os.O_CREATE,0644)
 	title:=[]byte(strings_req[0]+","+strings_req[1]+"\n")
 	fd.Write(title)
-	for i:=0;i<LinsNum-noIPline;i++ {
+	for i:=0;i<LinsNum;i++ {
 		strings_req=<-req
 		buf:=[]byte(strings_req[0]+","+strings_req[1]+"\n")
 		//判断成功失败数量
@@ -118,7 +123,7 @@ func main()  {
 		fd.Write(buf)
 	}
 	fd.Close()
-	fmt.Println("批量ping已经完成!\n运行耗时: ",time.Since(t),"\nping成功主机数: ",Pingok,"\nping失败主机数: ",Pingerr,"主机总数: ",LinsNum)
+	fmt.Println("批量ping已经完成!\n运行耗时: ",time.Since(t),"\nping成功主机数: ",Pingok,"\nping失败主机数: ",Pingerr,"\n主机总数: ",LinsNum)
 }
 
 //获取文件行数

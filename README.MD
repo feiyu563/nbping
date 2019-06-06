@@ -10,6 +10,7 @@ nbping具备如下特性
  - 支持结果导出到文件
  - 支持高并发,默认开启20个协程进行处理
  - 支持指定文件批量读取探活IP
+ - 支持自动过滤无效IP,空行等
 
 --------------------------------------
 部署方式
@@ -40,17 +41,18 @@ nbping 支持以下参数:
 
 ```
   -d int
-        if open debug,是否开启debug模式,开启则显示每条探活记录,默认不开启,支持参数0,1,此参数会影响性能,建议大批量时候不开启
-  -h    
-        for help 显示帮助信息
+        是否打开debug模式,即开启显示每条IP结果记录
+  -h    显示此帮助页
+        build by zhangjikun@haima.me
+        version 1.1
   -i string
-        ip file path (default "ip.txt"),指定IP文件存放的路径(必须参数)
+        IP文件所在路径,,默认读取当前目录ip.txt (default "ip.txt")
   -n int
-        number of thread for ping (default 20),指定同时开启的协程数量,默认20,如果机器性能很高,则可以开启更多数量.
+        开启的并发协程数量,默认20 (default 20)
   -o string
-        out put file path (default "out.csv"),指定输出的文件路径(必须参数)
+        结果输出文件所在路径,默认放在当前目录out.csv (default "out.csv")
   -r int
-        if open debug (default 2),失败重试次数.默认为两次重试
+        IP检测失败重试次数,默认2次 (default 2)
 ```
 
 效果图
