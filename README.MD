@@ -72,4 +72,4 @@ FOR HELP
 ----
 Email: 244217140@qq.com
 
-![me](doc/wx.jpg)
+![me](doc/wx.png)
