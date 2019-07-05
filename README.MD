@@ -57,7 +57,7 @@ nbping 支持以下参数:
 
 效果图
 ----
-![tp](https://raw.githubusercontent.com/feiyu563/nbping/master/doc/tp.png)
+![tp](doc/tp.png)
 
 
 项目源码
@@ -72,4 +72,4 @@ FOR HELP
 ----
 Email: 244217140@qq.com
 
-![me](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/me.jpg)
+![me](doc/wx.jpg)
