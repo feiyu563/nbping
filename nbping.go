@@ -205,6 +205,7 @@ func (self *ping) Ping(count int)(string) {
 		//fmt.Printf("From %s reply: time=%d ttl=%d\n", self.Addr, r.Time, r.TTL)
 		return "is alive"
 	}
+	
 }
 
 func (self *ping) PingCount(count int) (reply []Reply) {
