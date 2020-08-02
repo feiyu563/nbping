@@ -39,6 +39,7 @@ var (
 	Pingok int
 	debug_req int
 	retry int
+	TimeOut int
 )
 //多线程
 func IPpingStart(line string,req chan []string,status chan int) {
@@ -74,6 +75,7 @@ func main()  {
 	flag.IntVar(&num, "n", 20, "开启的并发协程数量,默认20")
 	flag.IntVar(&debug_req, "d", 0, "是否打开debug模式,即开启显示每条IP结果记录")
 	flag.IntVar(&retry, "r", 2, "IP检测失败重试次数,默认2次")
+	flag.IntVar(&TimeOut, "t", 1, "检测超时时间（单位秒），默认1秒")
 	var help bool
 	flag.BoolVar(&help,"h", false, "显示此帮助页\nbuild by zhangjikun@haima.me\nversion 1.0")
 	flag.Parse()
@@ -180,7 +182,7 @@ func (self *ping) Ping(count int)(string) {
 	}
 	//fmt.Println("Start ping from ", self.Conn.LocalAddr())
 	//ping的回复超时时间,默认1秒
-	self.SetDeadline(1)
+	self.SetDeadline(TimeOut)
 	//多次ping
 	//for i := 0; i < count; i++ {
 	//	r := sendPingMsg(self.Conn, self.Data)

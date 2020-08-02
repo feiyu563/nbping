@@ -53,6 +53,8 @@ nbping 支持以下参数:
         结果输出文件所在路径,默认放在当前目录out.csv (default "out.csv")
   -r int
         IP检测失败重试次数,默认2次 (default 2)
+  -t int
+        检测超时时间（单位秒），默认1秒
 ```
 
 效果图
